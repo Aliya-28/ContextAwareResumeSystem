@@ -14,13 +14,13 @@ class InputData(BaseModel):
     resume: str
     job: str
 
-# ✅ Skill Database
+#  Skill Database
 SKILLS_DB = [
     "java", "spring boot", "sql", "python",
     "aws", "docker", "react", "machine learning"
 ]
 
-# ✅ Recommendations for missing skills
+#  Recommendations for missing skills
 RECOMMENDATIONS = {
     "aws": "Learn AWS (EC2, S3) for cloud deployment",
     "docker": "Learn Docker for containerization",
@@ -30,7 +30,7 @@ RECOMMENDATIONS = {
     "machine learning": "Explore ML algorithms and Python libraries like scikit-learn"
 }
 
-# ✅ Extract skills
+#  Extract skills
 def extract_skills(text):
     text = text.lower()
     return [skill for skill in SKILLS_DB if skill in text]
@@ -64,13 +64,13 @@ def perform_analysis(resume, job):
     strength = f"Strong match in: {', '.join(matched) if matched else 'None'}"
     weakness = f"Missing important skills: {', '.join(missing) if missing else 'None'}"
 
-    # 🔥 Recommendations
+    #  Recommendations
     recommendations = []
     for skill in missing:
         if skill in RECOMMENDATIONS:
             recommendations.append(RECOMMENDATIONS[skill])
 
-    # 🔥 Explainable AI
+    #  Explainable AI
     if final_score > 70:
         explanation = "The candidate is a strong match with high semantic similarity and most required skills present."
     elif final_score > 40:
@@ -98,11 +98,30 @@ def analyze(data: InputData):
 @app.post("/upload")
 async def upload_resume(file: UploadFile = File(...), job: str = ""):
 
+    if not file.filename.lower().endswith(".pdf"):
+        return {
+            "error": "Only PDF files are supported"
+        }
+
     text = ""
 
-    # Extract text from PDF
-    with pdfplumber.open(file.file) as pdf:
-        for page in pdf.pages:
-            text += page.extract_text() or ""
+    try:
+        with pdfplumber.open(file.file) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
 
-    return perform_analysis(text, job)
+                if page_text:
+                    text += page_text + "\n"
+
+        if not text.strip():
+            return {
+                "error": "Could not extract text from PDF"
+            }
+
+        return perform_analysis(text, job)
+
+    except Exception as e:
+        return {
+            "error": f"PDF processing failed: {str(e)}"
+        }
+

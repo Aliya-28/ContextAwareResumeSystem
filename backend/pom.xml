@@ -10,7 +10,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>backend</name>
 
-    <!-- ✅ Spring Boot Parent -->
+    <!--  Spring Boot Parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -18,13 +18,13 @@
         <relativePath/>
     </parent>
 
-    <!-- ✅ Java Version -->
+    <!--  Java Version -->
     <properties>
         <java.version>17</java.version>
         <lombok.version>1.18.30</lombok.version>
     </properties>
 
-    <!-- ✅ Dependencies -->
+    <!-- Dependencies -->
     <dependencies>
 
         <!-- Spring Boot Web -->
@@ -48,7 +48,7 @@
 
     </dependencies>
 
-    <!-- ✅ Build Plugin -->
+    <!--  Build Plugin -->
     <build>
         <plugins>
             <plugin>
